@@ -1,0 +1,49 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: helloworld-deployment
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: helloworld
+  template:
+    metadata:
+      labels:
+        app: helloworld
+    spec:
+      containers:
+      - name: helloworld
+        image: dorbar7/helloworld
+        ports:
+        - containerPort: 5000
+        env:
+        - name: WELCOME_MESSAGE
+          valueFrom:
+            configMapKeyRef:
+              name: helloworld-config
+              key: WELCOME_MESSAGE
+        - name: API_KEY
+          valueFrom:
+            secretKeyRef:
+              name: helloworld-secret
+              key: API_KEY     
+        volumeMounts:
+        - name: app-data
+          mountPath: /app/data
+        livenessProbe:
+          httpGet:
+            path: /
+            port: 5000
+          initialDelaySeconds: 5
+          periodSeconds: 10
+        readinessProbe:
+          httpGet:
+            path: /
+            port: 5000
+          initialDelaySeconds: 5
+          periodSeconds: 5
+      volumes:
+      - name: app-data
+        persistentVolumeClaim:
+          claimName: helloworld-pvc

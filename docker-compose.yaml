@@ -1,0 +1,7 @@
+version: '3'
+services:
+  image: "dorbar7/helloworld"
+  ports:
+    - 5000:5000
+    
+  
