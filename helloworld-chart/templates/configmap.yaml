@@ -1,0 +1,10 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ .Release.Name }}-config
+  labels:
+    app: {{ .Release.Name }}
+data:
+  BG_COLOR: '#12181b'
+  WELCOME_MESSAGE: {{ .Values.config.welcomeMessage | quote }}
+  CUSTOM_HEADER: {{ .Values.config.customHeader | quote }}

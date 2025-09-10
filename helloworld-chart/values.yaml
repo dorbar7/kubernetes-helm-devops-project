@@ -1,0 +1,56 @@
+appName: helloworld
+replicaCount: 2
+
+image:
+  repository: dorbar7/helloworld
+  tag: latest
+  pullPolicy: IfNotPresent
+
+service:
+  type: NodePort
+  port: 80
+  targetPort: 5000
+  nodePort: 30036
+
+resources:
+  requests:
+    cpu: "50m"
+  limits:
+    cpu: "100m"
+
+storage:
+  size: 1Gi
+  accessMode: ReadWriteOnce
+
+autoscaling:
+  enabled: true
+  minReplicas: 3
+  maxReplicas: 5
+  targetCPUUtilizationPercentage: 50
+
+cronjob:
+  enabled: true
+  schedule: "*/5 * * * *"
+
+probes:
+  liveness:
+    path: /
+    port: 5000
+    initialDelaySeconds: 5
+    periodSeconds: 10
+  readiness:
+    path: /
+    port: 5000
+    initialDelaySeconds: 5
+    periodSeconds: 5
+
+config:
+  welcomeMessage: "Hello from ConfigMap!"
+  customHeader: "This app was deployed with helM"
+
+secret:
+  apiKey: "c3VwZXJhcHBrZXk="
+
+volumeMounts:
+  appData:
+    mountPath: /app/data

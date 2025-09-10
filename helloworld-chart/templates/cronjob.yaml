@@ -1,32 +1,37 @@
+{{- if .Values.cronjob.enabled }}
 apiVersion: batch/v1
 kind: CronJob
 metadata:
-  name: helloworld-cronjob
+  name: {{ .Release.Name }}-cronjob
+  labels:
+    app: {{ .Release.Name }}
 spec:
-  schedule: "0 * * * *"  
+  schedule: {{ .Values.cronjob.schedule | quote }}
   jobTemplate:
     spec:
       template:
         spec:
           containers:
-          - name: helloworld
-            image: dorbar7/helloworld
+          - name: {{ .Release.Name }}
+            image: {{ .Values.image.repository }}:{{ .Values.image.tag }}
+            imagePullPolicy: {{ .Values.image.pullPolicy }}
             env:
             - name: WELCOME_MESSAGE
               valueFrom:
                 configMapKeyRef:
-                  name: helloworld-config
+                  name: {{ .Release.Name }}-config
                   key: WELCOME_MESSAGE
             - name: API_KEY
               valueFrom:
                 secretKeyRef:
-                  name: helloworld-secret
+                  name: {{ .Release.Name }}-secret
                   key: API_KEY
             volumeMounts:
             - name: app-data
-              mountPath: /app/data
+              mountPath: {{ .Values.volumeMounts.appData.mountPath }}
           restartPolicy: OnFailure
           volumes:
           - name: app-data
             persistentVolumeClaim:
-              claimName: helloworld-pvc
+              claimName: {{ .Release.Name }}-pvc
+{{- end }}
