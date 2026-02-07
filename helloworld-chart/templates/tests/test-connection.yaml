@@ -1,0 +1,20 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: "{{ include "helloworld-chart.fullname" . }}-test-connection"
+  labels:
+    {{- include "helloworld-chart.labels" . | nindent 4 }}
+  annotations:
+    "helm.sh/hook": test
+spec:
+  containers:
+    - name: connection-test
+      image: {{ .Values.image.repository }}:{{ .Values.image.tag }}
+      imagePullPolicy: {{ .Values.image.pullPolicy }}
+      command:
+        - sh
+        - -c
+        - >
+          echo "🔍 Testing connectivity to service {{ include "helloworld-chart.fullname" . }} on port {{ .Values.service.port }}";
+          wget -qO- {{ include "helloworld-chart.fullname" . }}:{{ .Values.service.port }}{{ default "/" .Values.test.path }};
+  restartPolicy: Never

@@ -1,4 +1,4 @@
-from flask import Flask
+from flask import Flask ,jsonify
 import os
 
 app = Flask(__name__)
@@ -6,6 +6,11 @@ app = Flask(__name__)
 @app.route("/")
 def helloworld():
     return "Hello World!"
+
+@app.route("/health")
+def health():
+    return jsonify({"status": "healthy", "version": "1.0.0"})
+
 
 
 if __name__ == "__main__":

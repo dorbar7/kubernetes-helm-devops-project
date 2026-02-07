@@ -1,6 +1,0 @@
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: helloworld-config
-data:
-  WELCOME_MESSAGE: "Hello from ConfigMap!"

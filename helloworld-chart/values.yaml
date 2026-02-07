@@ -54,3 +54,23 @@ secret:
 volumeMounts:
   appData:
     mountPath: /app/data
+test:
+  enabled: true
+  path: /  
+  port: 5000
+  initialDelaySeconds: 5
+  periodSeconds: 10                     
+ingress:
+  enabled: true
+  className: nginx
+  annotations:
+    kubernetes.io/ingress.class: nginx
+  hosts:
+    - host: myapp.example.com
+      paths:
+        - path: /
+          pathType: Prefix
+  tls:
+    - secretName: my-tls
+      hosts:
+        - myapp.example.com
